@@ -58,13 +58,24 @@ class CalendarApp {
         });
 
         // Install prompt
-        document.getElementById('installBtn').addEventListener('click', () => this.installApp());
+        document.getElementById('installBtn').addEventListener('click', () => this.showInstallChoiceModal());
         document.getElementById('dismissInstall').addEventListener('click', () => this.dismissInstallPrompt());
+
+        // Install choice modal
+        document.getElementById('closeInstallModal').addEventListener('click', () => this.closeInstallChoiceModal());
+        document.getElementById('installPWA').addEventListener('click', () => this.installApp());
+        document.getElementById('downloadNative').addEventListener('click', () => this.downloadNativeInstaller());
 
         // Modal overlay click to close
         document.getElementById('taskModal').addEventListener('click', (e) => {
             if (e.target.id === 'taskModal') {
                 this.closeTaskModal();
+            }
+        });
+
+        document.getElementById('installChoiceModal').addEventListener('click', (e) => {
+            if (e.target.id === 'installChoiceModal') {
+                this.closeInstallChoiceModal();
             }
         });
 
@@ -654,35 +665,58 @@ class CalendarApp {
         }
 
         // Install prompt
-        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            deferredPrompt = e;
+            this.deferredPrompt = e;
             document.getElementById('installPrompt').classList.add('show');
         });
 
         window.addEventListener('appinstalled', () => {
             document.getElementById('installPrompt').classList.remove('show');
-            deferredPrompt = null;
+            this.deferredPrompt = null;
         });
     }
 
+    showInstallChoiceModal() {
+        document.getElementById('installChoiceModal').classList.add('active');
+    }
+
+    dismissInstallPrompt() {
+        document.getElementById('installPrompt').classList.remove('show');
+    }
+
+    closeInstallChoiceModal() {
+        document.getElementById('installChoiceModal').classList.remove('active');
+    }
+
     installApp() {
-        if (window.deferredPrompt) {
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then((choiceResult) => {
+        if (this.deferredPrompt) {
+            this.deferredPrompt.prompt();
+            this.deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('User accepted the install prompt');
                 } else {
                     console.log('User dismissed the install prompt');
                 }
-                window.deferredPrompt = null;
+                this.deferredPrompt = null;
+                this.closeInstallChoiceModal();
             });
+        } else {
+            // Fallback if PWA install is not available
+            Swal.fire({
+                title: 'PWA Install Not Available',
+                text: 'Your browser doesn\'t support PWA installation or the app is already installed.',
+                icon: 'info',
+                confirmButtonColor: '#6366f1'
+            });
+            this.closeInstallChoiceModal();
         }
     }
 
-    dismissInstallPrompt() {
-        document.getElementById('installPrompt').classList.remove('show');
+    downloadNativeInstaller() {
+        // Open the Dropbox link in a new tab to download the installer
+        window.open('https://www.dropbox.com/scl/fi/0a4f6o2zh7qntq5b0jg5m/EruFlow-Setup-1.0.0.exe?rlkey=8heyc0q4rm0p3o2qs023eqok0&st=z25mk00g&dl=1', '_blank');
+        this.closeInstallChoiceModal();
     }
 
     getRepeatSVG() {
