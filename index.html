@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EruFlow</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Modern Calendar with Task Management">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-calendar-alt"></i> EruFlow</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="calendar">
+                    <i class="fas fa-calendar"></i>
+                    <span>Calendar</span>
+                </button>
+                <button class="nav-item" data-view="tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tasks</span>
+                </button>
+                <button class="nav-item" data-view="today">
+                    <i class="fas fa-star"></i>
+                    <span>Today</span>
+                </button>
+                
+                <!-- Add Task Button moved here -->
+                <div class="add-task-section">
+                    <button class="add-task-btn" id="addTaskBtn">
+                        <i class="fas fa-plus"></i>
+                        Add Task
+                    </button>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <!-- Removed add task button from here -->
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h2 id="currentViewTitle">Calendar</h2>
+                    <p id="currentDate"></p>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="prevMonth">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="header-btn" id="todayBtn">Today</button>
+                    <button class="header-btn" id="nextMonth">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Calendar View -->
+            <div class="view-container" id="calendarView">
+                <div class="calendar-grid">
+                    <div class="calendar-header">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+                    </div>
+                    <div class="calendar-body" id="calendarBody"></div>
+                </div>
+            </div>
+
+            <!-- Tasks View -->
+            <div class="view-container hidden" id="tasksView">
+                <div class="tasks-container">
+                    <div class="tasks-header">
+                        <h3>All Tasks</h3>
+                        <div class="task-filters">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="pending">Pending</button>
+                            <button class="filter-btn" data-filter="completed">Completed</button>
+                        </div>
+                    </div>
+                    <div class="tasks-list" id="tasksList"></div>
+                </div>
+            </div>
+
+            <!-- Today View -->
+            <div class="view-container hidden" id="todayView">
+                <div class="today-container">
+                    <div class="today-header">
+                        <h3>Today's Tasks</h3>
+                        <p id="todayDate"></p>
+                    </div>
+                    <div class="today-tasks" id="todayTasks"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Task</h3>
+                <button class="close-btn" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="task-form" id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" id="taskTitle" name="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" name="taskDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDate">Date</label>
+                        <input type="date" id="taskDate" name="taskDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskTime">Time</label>
+                        <input type="time" id="taskTime" name="taskTime">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority" name="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskCategory">Category</label>
+                        <select id="taskCategory" name="taskCategory">
+                            <option value="work">Work</option>
+                            <option value="personal">Personal</option>
+                            <option value="health">Health</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskRepeat">Repeat</label>
+                    <select id="taskRepeat" name="taskRepeat">
+                        <option value="none">No Repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                
+                <!-- Weekly Repeat Info -->
+                <div class="form-group hidden" id="weeklyRepeatInfo">
+                    <p class="repeat-info">This task will repeat every <span id="weeklyRepeatDay">Monday</span></p>
+                </div>
+                
+                <!-- Monthly Repeat Options -->
+                <div class="form-group hidden" id="monthlyRepeatOptions">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="monthlyWeek">Week of Month</label>
+                            <select id="monthlyWeek" name="monthlyWeek">
+                                <option value="1">1st Week</option>
+                                <option value="2">2nd Week</option>
+                                <option value="3">3rd Week</option>
+                                <option value="4">4th Week</option>
+                                <option value="last">Last Week</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="monthlyWeekday">Day of Week</label>
+                            <select id="monthlyWeekday" name="monthlyWeekday">
+                                <option value="0">Sunday</option>
+                                <option value="1">Monday</option>
+                                <option value="2">Tuesday</option>
+                                <option value="3">Wednesday</option>
+                                <option value="4">Thursday</option>
+                                <option value="5">Friday</option>
+                                <option value="6">Saturday</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelTask">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <span>Install Eruflow App</span>
+            <button class="install-btn" id="installBtn">Install</button>
+            <button class="dismiss-btn" id="dismissInstall">×</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="sw.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html> 

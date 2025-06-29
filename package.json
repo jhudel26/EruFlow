@@ -1,0 +1,65 @@
+{
+  "name": "eruflow",
+  "version": "1.0.0",
+  "description": "Modern Calendar with Task Management",
+  "main": "main.js",
+  "author": "EruFlow Team",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win dir --publish never",
+    "build:installer": "electron-builder --win nsis --publish never",
+    "build:portable": "electron-builder --win portable --publish never",
+    "build:all": "electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.eruflow.app",
+    "productName": "EruFlow",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*",
+      "!dist/**/*",
+      "!*.md",
+      "!install-shortcut.bat",
+      "!build-clean.bat",
+      "!build-simple.bat",
+      "!build-minimal.bat",
+      "!build-direct.bat",
+      "!package-minimal.json",
+      "!package-custom.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        },
+        {
+          "target": "dir",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icons/icon-256x256.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "EruFlow",
+      "installerIcon": "icons/icon-256x256.ico",
+      "uninstallerIcon": "icons/icon-256x256.ico",
+      "installerHeaderIcon": "icons/icon-256x256.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.0.0"
+  }
+} 

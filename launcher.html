@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar App Launcher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .launcher {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .launcher h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .launcher p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .launch-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        .instructions {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="launcher">
+        <h1><i class="fas fa-calendar-alt"></i> Calendar App</h1>
+        <p>Modern Calendar with Task Management</p>
+        <button class="launch-btn" onclick="launchApp()">
+            <i class="fas fa-rocket"></i> Launch Calendar
+        </button>
+        <div class="instructions">
+            <p>💡 Tip: You can pin this to your taskbar for quick access!</p>
+        </div>
+    </div>
+
+    <script>
+        function launchApp() {
+            // Try to open in app mode first
+            const appWindow = window.open('index.html', 'calendar-app', 
+                'width=1200,height=800,resizable=yes,scrollbars=yes,status=yes,menubar=no,toolbar=no');
+            
+            if (appWindow) {
+                // Focus the new window
+                appWindow.focus();
+                
+                // Optional: Close launcher after a delay
+                setTimeout(() => {
+                    window.close();
+                }, 1000);
+            } else {
+                // Fallback: open in same window
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Auto-launch after 3 seconds
+        setTimeout(() => {
+            launchApp();
+        }, 3000);
+    </script>
+</body>
+</html> 
